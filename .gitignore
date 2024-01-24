@@ -1,5 +1,7 @@
 out
 node_modules
 *.vsix
-.*/
 todo.md
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
