@@ -1,8 +1,8 @@
 {
     "name": "capitalization-correction",
     "displayName": "CApitalization Correction",
-    "description": "Correct wrong capitalization in the text input.",
-    "version": "0.1.0",
+    "description": "Correct wrong capitalization in text input.",
+    "version": "0.2.0",
     "publisher": "maziac",
     "license": "MIT",
     "keywords": [
