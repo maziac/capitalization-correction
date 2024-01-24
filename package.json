@@ -1,0 +1,43 @@
+{
+    "name": "capitalization-correction",
+    "displayName": "CApitalization Correction",
+    "description": "Correct wrong capitalization in the text input.",
+    "version": "0.1.0",
+    "publisher": "maziac",
+    "license": "MIT",
+    "keywords": [
+        "capitalization",
+        "input",
+        "text",
+        "utility"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/maziac/capitalization-correction.git"
+    },
+    "engines": {
+        "vscode": "^1.71.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "icon": "assets/icon.png",
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./out/extension",
+    "scripts": {
+        "compile": "tsc -p ./",
+        "tslint": "eslint ./**/*.ts",
+        "watch": "tsc -w -p ./",
+        "test": "mocha -u tdd ./out/tests/",
+        "package": "vsce package",
+        "publish": "vsce publish"
+    },
+    "devDependencies": {
+        "@types/mocha": "^10.0.0",
+        "@types/node": "18.8.2",
+        "@types/vscode": "^1.71.0",
+        "typescript": "^4.8.4"
+    }
+}
