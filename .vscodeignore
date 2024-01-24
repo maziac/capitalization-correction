@@ -5,4 +5,7 @@ src/**
 .gitignore
 tsconfig.json
 notes.md
+todo.md
 *.vsix
+assets/*.xcf
+**/hex-hover*
