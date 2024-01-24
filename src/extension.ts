@@ -22,7 +22,8 @@ function correctInput(event: vscode.TextDocumentChangeEvent) {
 
     console.log(event.contentChanges[0].text);
     // Check if no letter
-    if (event.contentChanges[0].text.match(/[\p{Lu}\p{Ll}]/u)) {
+    const inpLetter = event.contentChanges[0].text
+    if (inpLetter.length !== 1 || inpLetter.match(/[\p{Lu}\p{Ll}]/u)) {
         return;
     }
 
@@ -48,18 +49,23 @@ function correctInput(event: vscode.TextDocumentChangeEvent) {
     console.log("::" + foundWord);
 
     // Replace
-    const correctedWord = foundWord.replace(/^(\p{Lu})(\p{Lu}+)(\p{Ll})/gu, (match, g1, g2, g3) => g1 + g2.toLowerCase() + g3);
+    let correctedWord = foundWord.replace(/^(\p{Lu})(\p{Lu}+)(\p{Ll})/gu, (match, g1, g2, g3) => g1 + g2.toLowerCase() + g3);
 
     if (correctedWord !== foundWord) {
+        const startClmn = selectionClmn - correctedWord.length;
+        let endClmn = selectionClmn;
+        if (inpLetter !== '\n') {
+            correctedWord += inpLetter;   // For correct behavior of UNDO
+            endClmn++;
+        }
         editor.edit(
             editBuilder => {
-                const startClmn = selectionClmn - correctedWord.length;
-                editBuilder.delete(new vscode.Range(line, startClmn, line, selectionClmn));
+                editBuilder.delete(new vscode.Range(line, startClmn, line, endClmn));
                 editBuilder.insert(new vscode.Position(line, startClmn), correctedWord);
             },
             {
                 undoStopAfter: false,
-                undoStopBefore: false,
+                undoStopBefore: true,
             }
         );
     }
