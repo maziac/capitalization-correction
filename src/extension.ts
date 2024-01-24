@@ -41,7 +41,7 @@ function correctInput(event: vscode.TextDocumentChangeEvent) {
     console.log(":" + text);
 
     // Get characters in front of selection
-    const match = /[^\p{Lu}\p{Ll}](\p{Lu}\p{Lu}\p{Ll}+)$/u.exec(text);
+    const match = /(?:^|[^\p{Lu}\p{Ll}])(\p{Lu}\p{Lu}\p{Ll}+)$/u.exec(text);
     if (!match)
         return; // Nothing found
     const foundWord = match[1];
