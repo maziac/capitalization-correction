@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import {Regexes} from './utility';
+import {Utility} from './utility';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -17,22 +17,19 @@ export function activate(context: vscode.ExtensionContext) {
  */
 function correctInput(event: vscode.TextDocumentChangeEvent) {
     // Check on change
-    if (!event.contentChanges.length) {
+    if (!event.contentChanges.length)
         return;
-    }
 
     // Check if no letter
     const inpLetter = event.contentChanges[0].text
     //console.log(inpLetter);
-    if (!Regexes.isNoLetter(inpLetter)) {
+    if (Utility.isLetter(inpLetter))
         return;
-    }
 
     // Safety check for active editor
     const editor = vscode.window.activeTextEditor;
-    if (!editor || editor.document != event.document) {
+    if (!editor || editor.document != event.document)
         return;
-    }
 
     const {selection} = editor;
     const selectionClmn = selection.start.character;
@@ -42,32 +39,26 @@ function correctInput(event: vscode.TextDocumentChangeEvent) {
     );
     //console.log(":" + text);
 
-    // Get characters in front of selection
-    const match = /(?:^|[^\p{Lu}\p{Ll}])(\p{Lu}\p{Lu}\p{Ll}+)$/u.exec(text);
-    if (!match)
-        return; // Nothing found
-    const foundWord = match[1];
-    //console.log("::" + foundWord);
+    // Get corrected word
+    let correctedWord = Utility.getCorrectlyCapitalizedWord(text);
+    if (!correctedWord)
+        return; // No word was corrected
 
     // Replace
-    let correctedWord = foundWord.replace(/^(\p{Lu})(\p{Lu}+)(\p{Ll})/gu, (match, g1, g2, g3) => g1 + g2.toLowerCase() + g3);
-
-    if (correctedWord !== foundWord) {
-        const startClmn = selectionClmn - correctedWord.length;
-        let endClmn = selectionClmn;
-        if (inpLetter !== '\n') {
-            correctedWord += inpLetter;   // For correct behavior of UNDO
-            endClmn++;
-        }
-        editor.edit(
-            editBuilder => {
-                editBuilder.delete(new vscode.Range(line, startClmn, line, endClmn));
-                editBuilder.insert(new vscode.Position(line, startClmn), correctedWord);
-            },
-            {
-                undoStopAfter: false,
-                undoStopBefore: true,
-            }
-        );
+    const startClmn = selectionClmn - correctedWord.length;
+    let endClmn = selectionClmn;
+    if (inpLetter !== '\n') {
+        correctedWord += inpLetter;   // For correct behavior of UNDO
+        endClmn++;
     }
+    editor.edit(
+        editBuilder => {
+            editBuilder.delete(new vscode.Range(line, startClmn, line, endClmn));
+            editBuilder.insert(new vscode.Position(line, startClmn), correctedWord!);
+        },
+        {
+            undoStopAfter: false,
+            undoStopBefore: true,
+        }
+    );
 }
