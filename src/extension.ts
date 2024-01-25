@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import {Regexes} from './utility';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -20,10 +21,10 @@ function correctInput(event: vscode.TextDocumentChangeEvent) {
         return;
     }
 
-    console.log(event.contentChanges[0].text);
     // Check if no letter
     const inpLetter = event.contentChanges[0].text
-    if (inpLetter.length !== 1 || inpLetter.match(/[\p{Lu}\p{Ll}]/u)) {
+    //console.log(inpLetter);
+    if (!Regexes.isNoLetter(inpLetter)) {
         return;
     }
 
@@ -39,14 +40,14 @@ function correctInput(event: vscode.TextDocumentChangeEvent) {
     const text = editor.document.getText(
         new vscode.Range(line, 0, line, selectionClmn)
     );
-    console.log(":" + text);
+    //console.log(":" + text);
 
     // Get characters in front of selection
     const match = /(?:^|[^\p{Lu}\p{Ll}])(\p{Lu}\p{Lu}\p{Ll}+)$/u.exec(text);
     if (!match)
         return; // Nothing found
     const foundWord = match[1];
-    console.log("::" + foundWord);
+    //console.log("::" + foundWord);
 
     // Replace
     let correctedWord = foundWord.replace(/^(\p{Lu})(\p{Lu}+)(\p{Ll})/gu, (match, g1, g2, g3) => g1 + g2.toLowerCase() + g3);
