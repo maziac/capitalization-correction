@@ -1,7 +1,7 @@
 {
     "name": "capitalization-correction",
     "displayName": "CApitalization Correction",
-    "description": "Correct wrong capitalization in text input.",
+    "description": "Corrects wrong capitalization in text input.",
     "version": "0.3.0",
     "publisher": "maziac",
     "license": "MIT",
@@ -26,6 +26,26 @@
         "onStartupFinished"
     ],
     "main": "./out/src/extension",
+    "contributes": {
+        "configuration": {
+            "type": "object",
+            "title": "'CApitalization Correction' Configuration",
+            "properties": {
+                "capitalization-correction.includeFiles": {
+                    "type": "string",
+                    "default": "*",
+                    "scope": "resource",
+                    "description": "Add here all language ids or file extensions to include as a comma separated list. Language ids are e.g. 'plaintext,markdown'. File extensions have to start with a '.' e.g. '.txt,.md'. You can mix both e.g. 'plaintxt,.md'. Use '*' to match all files. An empty line matches no file."
+                },
+                "capitalization-correction.excludeFiles": {
+                    "type": "string",
+                    "default": "*",
+                    "scope": "resource",
+                    "description": "Add here all language ids or file extensions to exclude as a comma separated list. Language ids are e.g. 'plaintext,markdown'. File extensions have to start with a '.' e.g. '.txt,.md'. You can mix both e.g. 'plaintxt,.md'. Use '*' to match all files."
+                }
+            }
+        }
+    },
     "scripts": {
         "compile": "tsc -p ./",
         "tslint": "eslint ./**/*.ts",

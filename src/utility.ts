@@ -14,8 +14,8 @@ export class Utility {
 	 */
 	public static isLetter(text: string): boolean {
 		if (text.length !== 1) return false;
-		const match = this.regexLetter.exec(text);
-		return (match !== null);
+		const found = this.regexLetter.test(text);
+		return found;
 	}
 
 	/** Returns the end of the string. If it ends with uppercase letters followed by lower case letters.
@@ -28,6 +28,30 @@ export class Utility {
 		// Otherwise fix capitalization
 		const correctedWord = match[1] + match[2].toLowerCase() + match[3];
 		return correctedWord;
-    }
+	}
 
+
+	/** The function checks if a given language ID or file extension is included
+	 * in a comma-separated string.
+	 * @param docLangId E.g. "javascript"
+	 * @param docFileExtension E.g. ".txt"
+	 * @param commaSepString E.g. "markdown,.txt". A mix of language Ids and
+	 * file extensions, separated by a comma. Or 'undefined'.
+	 * @returns a boolean value indicating whether the given `docLangId` or
+	 * `docFileExtension` are found in the `commaSepString`.
+	 */
+	public static contains(docLangId: string, docFileExtension: string, commaSepString: string | undefined): boolean {
+		let found = false;
+		if (commaSepString) {
+			// Check includes:
+			const wrappedString = `,${commaSepString},`;
+			// Check for language ids and file extensions
+			if (/,\*,/.test(wrappedString)
+				|| RegExp(`,${docLangId},`).test(wrappedString)
+				|| (docFileExtension && RegExp(`,\\${docFileExtension},`).test(wrappedString))) {
+				found = true;
+			}
+		}
+		return found;
+	}
 }

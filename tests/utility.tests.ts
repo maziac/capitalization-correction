@@ -48,4 +48,28 @@ suite('Utility', () => {
         assert.equal(Utility.getCorrectlyCapitalizedWord('ÄÖüß'), 'Äöüß');
     });
 
+
+    test('contains', () => {
+        // Not found
+        assert.ok(!Utility.contains('langIdzzzzz', 'extzzzz', ''));
+        assert.ok(!Utility.contains('', '', ''));
+        assert.ok(!Utility.contains('langIdzzzzz', 'extzzzz', undefined));
+        assert.ok(!Utility.contains('', '', undefined));
+        assert.ok(!Utility.contains('markdown', '', 'plaintext'));
+        assert.ok(!Utility.contains('', '.md', '.txt'));
+
+        // Found
+        assert.ok(Utility.contains('', '', '*'));
+        assert.ok(Utility.contains('', '', 'md,js,*,ts'));
+        assert.ok(Utility.contains('plaintext', '', '*'));
+        assert.ok(Utility.contains('plaintext', '', 'markdown,.js,*,.ts'));
+        assert.ok(Utility.contains('', '.txt', '*'));
+        assert.ok(Utility.contains('', '.txt', 'md,js,*,ts'));
+
+        assert.ok(Utility.contains('plaintext', '.zzz', 'markdown,.js,plaintext,.ts'));
+        assert.ok(Utility.contains('zzz', '.ts', 'markdown,.js,plaintext,.ts'));
+        assert.ok(Utility.contains('markdown', '.zzz', 'markdown,.js,plaintext,.ts'));
+        assert.ok(Utility.contains('zz', '.js', 'markdown,.js,plaintext,.ts'));
+    });
+
 });
