@@ -39,9 +39,9 @@
                 },
                 "capitalization-correction.excludeFiles": {
                     "type": "string",
-                    "default": "*",
+                    "default": "",
                     "scope": "resource",
-                    "description": "Add here all language ids or file extensions to exclude as a comma separated list. Language ids are e.g. 'plaintext,markdown'. File extensions have to start with a '.' e.g. '.txt,.md'. You can mix both e.g. 'plaintxt,.md'. Use '*' to match all files."
+                    "description": "Add here all language ids or file extensions to exclude as a comma separated list. Language ids are e.g. 'plaintext,markdown'. File extensions have to start with a '.' e.g. '.txt,.md'. You can mix both e.g. 'plaintxt,.md'. An empty line will exclude no files. Files are excluded after files are included."
                 }
             }
         }

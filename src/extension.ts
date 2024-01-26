@@ -92,7 +92,7 @@ if (!workspaceFolderUri) {
         // Check excludes:
         if (passedFilters) {    // Only if not already failed
             const excludeFiles = preferences.get<string>('excludeFiles');
-            passedFilters = Utility.contains(doc.languageId, fileExtension, excludeFiles);
+            passedFilters = !Utility.contains(doc.languageId, fileExtension, excludeFiles);
         }
     }
     //console.log("doc languageId: " + doc.languageId);
