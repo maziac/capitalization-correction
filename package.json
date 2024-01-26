@@ -35,13 +35,13 @@
                     "type": "string",
                     "default": "*",
                     "scope": "resource",
-                    "description": "Add here all language ids or file extensions to include as a comma separated list. Language ids are e.g. 'plaintext,markdown'. File extensions have to start with a '.' e.g. '.txt,.md'. You can mix both e.g. 'plaintxt,.md'. Use '*' to match all files. An empty line matches no file."
+                    "description": "Add here all file extensions to include as a comma separated list. E.g. 'txt,md'. Use '*' to match all files. An empty line matches no file."
                 },
                 "capitalization-correction.excludeFiles": {
                     "type": "string",
                     "default": "",
                     "scope": "resource",
-                    "description": "Add here all language ids or file extensions to exclude as a comma separated list. Language ids are e.g. 'plaintext,markdown'. File extensions have to start with a '.' e.g. '.txt,.md'. You can mix both e.g. 'plaintxt,.md'. An empty line will exclude no files. Files are excluded after files are included."
+                    "description": "Add here all file extensions to exclude as a comma separated list. E.g. 'js,cpp'. An empty line matches no file. Files are excluded after files are included."
                 }
             }
         }

@@ -84,15 +84,15 @@ if (!workspaceFolderUri) {
     }
 
     // Check include/exclude lists:
-    if (passedFilters === undefined) {
+if (passedFilters === undefined) {
         const includeFiles = preferences.get<string>('includeFiles');
         // Check includes:
-        const fileExtension = path.extname(editor.document.fileName);
-        passedFilters = Utility.contains(doc.languageId, fileExtension, includeFiles);
+        const fileExtension = path.extname(editor.document.fileName)?.slice(1);
+        passedFilters = Utility.contains(fileExtension, includeFiles);
         // Check excludes:
         if (passedFilters) {    // Only if not already failed
             const excludeFiles = preferences.get<string>('excludeFiles');
-            passedFilters = !Utility.contains(doc.languageId, fileExtension, excludeFiles);
+            passedFilters = !Utility.contains(fileExtension, excludeFiles);
         }
     }
     //console.log("doc languageId: " + doc.languageId);
