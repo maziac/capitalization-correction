@@ -33,6 +33,7 @@ export class Utility {
 
 	/** The function checks if a given language ID or file extension is included
 	 * in a comma-separated string.
+	 * Comparisons are case sensitive.
 	 * @param docFileExtension E.g. "txt" or "js"
 	 * @param commaSepString E.g. "js,txt". A mix of language Ids and
 	 * file extensions, separated by a comma. Or 'undefined'.
@@ -42,11 +43,14 @@ export class Utility {
 	public static contains(docFileExtension: string, commaSepString: string | undefined): boolean {
 		let found = false;
 		if (commaSepString) {
+			// To lowercase (case insensitive)
+			docFileExtension = docFileExtension.toLowerCase();
+			commaSepString = commaSepString.toLowerCase();
 			// Check includes:
 			const wrappedString = `,${commaSepString.replaceAll('.', '')},`;
 			// Check for language ids and file extensions
-			if (/,\*,/.test(wrappedString)
-				|| (docFileExtension && RegExp(`,\\${docFileExtension},`).test(wrappedString))) {
+			if (wrappedString.includes(',*,')
+				|| (docFileExtension && wrappedString.includes(`,${docFileExtension},`))) {
 				found = true;
 			}
 		}
