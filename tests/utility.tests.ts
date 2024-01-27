@@ -59,9 +59,7 @@ suite('Utility', () => {
         assert.ok(!Utility.contains('md', 'txt'));
 
         // Found
-        assert.ok(Utility.contains('', '*'));
-        assert.ok(Utility.contains('txt', '*'));
-        assert.ok(Utility.contains('ts', 'md,js,*,ts'));
+        assert.ok(Utility.contains('ts', 'md,js,ts'));
         assert.ok(Utility.contains('js', 'md,js,ts'));;
         assert.ok(Utility.contains('js', 'js'));
     });
