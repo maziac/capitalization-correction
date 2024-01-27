@@ -5,6 +5,7 @@ src/**
 .gitignore
 tsconfig.json
 notes.md
+scratchpad.md
 todo.md
 *.vsix
 assets/*.xcf

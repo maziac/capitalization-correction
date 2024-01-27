@@ -10,8 +10,11 @@ let preferences: vscode.WorkspaceConfiguration | undefined;
 // To store the current workspace folder.
 let workspaceFolderUri: vscode.Uri | undefined;
 
-// Stroes if all include and exclude filters have been passed.
-let passedFilters: boolean | undefined;
+// Stores if all include and exclude filters have been passed.
+let hasPassedFilters: boolean | undefined;
+
+// Stores whether the correction should only be applied to text
+let inCStyleComment: boolean;
 
 // The extension name
 let extensionName: string;
@@ -26,7 +29,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(e => {
         if (e.affectsConfiguration(extensionName)) {
             preferences = undefined; // Re-read next time
-            passedFilters = undefined;
+            hasPassedFilters = undefined;
         }
     }));
 
@@ -38,7 +41,7 @@ export function activate(context: vscode.ExtensionContext) {
     // Called everytime a document changes, e.g. on text input.
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(editor => {
         if (editor) {
-            passedFilters = undefined;
+            hasPassedFilters = undefined;
             // Get the workspace folder path
             const textWorkspaceFolderUri = vscode.workspace.getWorkspaceFolder(editor.document.uri)?.uri;
             // Check for change
@@ -84,30 +87,43 @@ if (!workspaceFolderUri) {
     }
 
     // Check include/exclude lists:
-if (passedFilters === undefined) {
+    if (hasPassedFilters === undefined) { // TODO: rename to isIncluded
         const includeFiles = preferences.get<string>('includeFiles');
         // Check includes:
-        const fileExtension = path.extname(editor.document.fileName)?.slice(1);
-        passedFilters = Utility.contains(fileExtension, includeFiles);
-        // Check excludes:
-        if (passedFilters) {    // Only if not already failed
+        const fileExtension = path.extname(editor.document.fileName)?.slice(1)
+        hasPassedFilters = Utility.contains(fileExtension, includeFiles);
+        // Check excludes: // Remove exludes
+        if (hasPassedFilters) {    // Only if not already failed
             const excludeFiles = preferences.get<string>('excludeFiles');
-            passedFilters = !Utility.contains(fileExtension, excludeFiles);
+            hasPassedFilters = !Utility.contains(fileExtension, excludeFiles);
         }
+        // Check if it is a programming language (to check for text only in comments):
+        const cStyleCommentsFiles = preferences.get<string>("cStyleCommentsFiles");
+        inCStyleComment = Utility.contains(fileExtension, cStyleCommentsFiles);
     }
     //console.log("doc languageId: " + doc.languageId);
 
     // Return if filtered out.
-    if (!passedFilters)
+    if (!hasPassedFilters && !inCStyleComment)
         return;
 
-    // Get line up to current "cursor" position
+    // Get current cursor column and line
     const start = editor.selection.start;
     const selectionClmn = start.character;
     const line = start.line;
-    const text = doc.getText(
-        new vscode.Range(line, 0, line, selectionClmn)
-    );
+
+    // Check for comment area
+    if (inCStyleComment) {
+        // Do extra check if current cursor position is inside a comment
+        const prevText = doc.getText(new vscode.Range(0, 0, line, selectionClmn));  // All text from line 0 to current cursor position
+        if (!Utility.isComment(prevText, '//', '/\\*', '\\*/')) {
+            // Stop if not in a comment
+            return;
+        }
+    }
+
+    // Get line up to current "cursor" position
+    const text = doc.getText(new vscode.Range(line, 0, line, selectionClmn));
     //console.log(":" + text);
 
     // Get corrected word

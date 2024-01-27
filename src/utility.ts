@@ -34,11 +34,10 @@ export class Utility {
 	/** The function checks if a given language ID or file extension is included
 	 * in a comma-separated string.
 	 * Comparisons are case sensitive.
-	 * @param docFileExtension E.g. "txt" or "js"
-	 * @param commaSepString E.g. "js,txt". A mix of language Ids and
-	 * file extensions, separated by a comma. Or 'undefined'.
-	 * @returns a boolean value indicating whether the given `docLangId` or
-	 * `docFileExtension` are found in the `commaSepString`.
+	 * @param docFileExtension E.g. "txt" or "js" or "" (empty).
+	 * @param commaSepString E.g. "js,txt". A comma separated list of file extensions. Or 'undefined'.
+	 * @returns a boolean value indicating whether the
+	 * `docFileExtension` is found in the `commaSepString`.
 	 */
 	public static contains(docFileExtension: string, commaSepString: string | undefined): boolean {
 		let found = false;
@@ -49,11 +48,63 @@ export class Utility {
 			// Check includes:
 			const wrappedString = `,${commaSepString.replaceAll('.', '')},`;
 			// Check for language ids and file extensions
-			if (wrappedString.includes(',*,')
-				|| (docFileExtension && wrappedString.includes(`,${docFileExtension},`))) {
+			if (docFileExtension && wrappedString.includes(`,${docFileExtension},`)) {
 				found = true;
 			}
 		}
 		return found;
+	}
+
+	/**
+	 * Checks if a given text contains a comment, either a block comment or a
+	 * single line comment.
+	 * The tokens need to be passed as an escaped string. I.e. ti should be
+	 * directly usable in a regex.
+	 * @param text The text that you want to check for comments.
+	 * @param singleLineToken The token used for single line comments, e.g. "//".
+	 * @param blockStartToken The token used for the start of a block comment, e.g. "/*".
+	 * @param blockEndToken The token used for the end of a block comment, e.g. "/*".
+	 * @returns true if the text ends in a comment.
+	 */
+	public static isComment(text: string, singleLineToken: string, blockStartToken: string, blockEndToken: string): boolean {
+		// First check for block comments.
+		//const match = RegExp('(/\\*|\\*/)', 'gm').exec(text);
+		let inComment = false;
+		let index = 0;
+		let match;
+		const regex = new RegExp(`(?:${blockStartToken}|${blockEndToken})`, 'g');
+		while ((match = regex.exec(text))) {
+			// Check match and check toggling of start/end token.
+			if (inComment) {
+				// Search for comment-block end token
+				if (match[0] === '*/') {
+					inComment = false;
+					// Calculate index after the comment end token
+					index = match.index + match[0].length;
+				}
+			}
+			else {
+				// Search for comment-block start token
+				if (match[0] === '/*') {	// NOSONAR
+					inComment = true;
+				}
+			}
+		}
+		// Return if inside a block comment
+		if (inComment)
+			return true;
+		// Otherwise remove the complete text up to the last end token
+		text = text.substring(index);
+		// Either there is no block comment or it has been terminated.
+
+		// Check for line comment:
+		// Get the starting index of the last line
+		const lineStartIndex = text.lastIndexOf('\n') + 1;
+		// Now search for single line token
+		if (text.includes('//', lineStartIndex))
+			return true;	// Single line comment found
+
+		// text ends in no comment
+		return false;
 	}
 }

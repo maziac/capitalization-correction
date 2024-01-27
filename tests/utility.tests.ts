@@ -66,4 +66,42 @@ suite('Utility', () => {
         assert.ok(Utility.contains('js', 'js'));
     });
 
+    test('isComment', () => {
+        // Is a comment
+        assert.ok(Utility.isComment('// abc', '//', '/\\*', '\\*/'));
+        assert.ok(Utility.isComment('// // abc', '//', '/\\*', '\\*/'));
+        assert.ok(Utility.isComment('*/ // abc', '//', '/\\*', '\\*/'));
+        assert.ok(Utility.isComment('/*  */ // abc', '//', '/\\*', '\\*/'));
+        assert.ok(Utility.isComment('/* ab */// abc', '//', '/\\*', '\\*/'));
+        assert.ok(Utility.isComment('/* */ */ // abc', '//', '/\\*', '\\*/'));
+        assert.ok(Utility.isComment('/* /* */ // abc', '//', '/\\*', '\\*/'));
+        assert.ok(Utility.isComment('/* abc', '//', '/\\*', '\\*/'));
+        assert.ok(Utility.isComment('/*a', '//', '/\\*', '\\*/'));
+        assert.ok(Utility.isComment('/* *//* */ /**//* abc', '//', '/\\*', '\\*/'));
+        // Multiline
+        assert.ok(Utility.isComment('\n\n   \n// abc', '//', '/\\*', '\\*/'));
+        assert.ok(Utility.isComment('\n\n   \n// // abc', '//', '/\\*', '\\*/'));
+        assert.ok(Utility.isComment('\n\n */  \n*/ // abc', '//', '/\\*', '\\*/'));
+        assert.ok(Utility.isComment('\n/*\n \n  */ // abc', '//', '/\\*', '\\*/'));
+        assert.ok(Utility.isComment('\n/*\n \n  */\n// abc', '//', '/\\*', '\\*/'));
+        assert.ok(Utility.isComment('\n/*\n \n  // */\n// abc', '//', '/\\*', '\\*/'));
+        assert.ok(Utility.isComment('/*\n*/\n/*\n\na', '//', '/\\*', '\\*/'));
+
+
+        // Is no comment
+        assert.ok(!Utility.isComment(' abc', '//', '/\\*', '\\*/'));
+        assert.ok(!Utility.isComment('', '//', '/\\*', '\\*/'));
+        assert.ok(!Utility.isComment('*/ abc', '//', '/\\*', '\\*/'));
+        assert.ok(!Utility.isComment('/*  */ abc', '//', '/\\*', '\\*/'));
+        // Multiline
+        assert.ok(!Utility.isComment('/*\n */ abc', '//', '/\\*', '\\*/'));
+        assert.ok(!Utility.isComment('/*\n */\n abc', '//', '/\\*', '\\*/'));
+        assert.ok(!Utility.isComment('\n\n\n', '//', '/\\*', '\\*/'));
+        assert.ok(!Utility.isComment('/* \n*/\n abc', '//', '/\\*', '\\*/'));
+        assert.ok(!Utility.isComment('/* \n*/\n abc', '//', '/\\*', '\\*/'));
+        assert.ok(!Utility.isComment('/* \n*/\n/*  */ abc', '//', '/\\*', '\\*/'));
+        assert.ok(!Utility.isComment('/* \n*/\n/*\n*/\n abc', '//', '/\\*', '\\*/'));
+
+    });
+
 });

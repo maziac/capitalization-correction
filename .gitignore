@@ -1,6 +1,8 @@
 out
 node_modules
 *.vsix
+notes.md
+scratchpad.md
 todo.md
 .vscode/*
 !.vscode/launch.json
