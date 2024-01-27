@@ -2,7 +2,7 @@
     "name": "capitalization-correction",
     "displayName": "CApitalization Correction",
     "description": "Corrects wrong capitalization in text input.",
-    "version": "0.3.0",
+    "version": "1.0.0",
     "publisher": "maziac",
     "license": "MIT",
     "keywords": [
@@ -35,19 +35,15 @@
                     "type": "string",
                     "default": "md,markdown,txt,text",
                     "scope": "resource",
-                    "description": "Add here all file extensions to include as a comma separated list. E.g. 'txt,md'. Use '*' to match all files. An empty line matches no file. Case insensitive."
-                },
-                "capitalization-correction.excludeFiles": {
-                    "type": "string",
-                    "default": "",
-                    "scope": "resource",
-                    "description": "Add here all file extensions to exclude as a comma separated list. E.g. 'js,cpp'. An empty line matches no file. Files are excluded after files are included. Case insensitive."
+                    "description": "Add here all file extensions to include as a comma separated list. E.g. 'txt,md'. An empty line matches no file. Case insensitive.",
+                    "order": 10
                 },
                 "capitalization-correction.cStyleCommentsFiles": {
                     "type": "string",
                     "default": "c,cpp,c++,h,hpp,js,ts,tsx,java,cs",
                     "scope": "resource",
-                    "description": "A comma separated list of file extensions used for programming languages. The programming language listed here are excluded from the capitalization correction other than their **comments**. Case insensitive."
+                    "description": "A comma separated list of file extensions used for programming languages. In these files only the C-style comments (//, /* */) are checked for worng capitalization.",
+                    "order": 20
                 }
             }
         }

@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import {Utility} from './utility';
 import path = require('path');
-//import {Preferences} from './preferences';
 
 
 // To store the current preferences.
@@ -11,7 +10,7 @@ let preferences: vscode.WorkspaceConfiguration | undefined;
 let workspaceFolderUri: vscode.Uri | undefined;
 
 // Stores if all include and exclude filters have been passed.
-let hasPassedFilters: boolean | undefined;
+let isIncluded: boolean | undefined;
 
 // Stores whether the correction should only be applied to text
 let inCStyleComment: boolean;
@@ -29,11 +28,11 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(e => {
         if (e.affectsConfiguration(extensionName)) {
             preferences = undefined; // Re-read next time
-            hasPassedFilters = undefined;
+            isIncluded = undefined;
         }
     }));
 
-    // Called everytime a document changes, e.g. on text input.
+    // Called every time a document changes, e.g. on text input.
     context.subscriptions.push(vscode.workspace.onDidChangeTextDocument(event => {
         correctInput(event);
     }));
@@ -41,7 +40,7 @@ export function activate(context: vscode.ExtensionContext) {
     // Called everytime a document changes, e.g. on text input.
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(editor => {
         if (editor) {
-            hasPassedFilters = undefined;
+            isIncluded = undefined;
             // Get the workspace folder path
             const textWorkspaceFolderUri = vscode.workspace.getWorkspaceFolder(editor.document.uri)?.uri;
             // Check for change
@@ -77,7 +76,7 @@ function correctInput(event: vscode.TextDocumentChangeEvent) {
         return;
 
     // Get workspace folder if necessary
-if (!workspaceFolderUri) {
+    if (!workspaceFolderUri) {
         workspaceFolderUri = vscode.workspace.getWorkspaceFolder(doc.uri)?.uri;
     }
 
@@ -87,16 +86,11 @@ if (!workspaceFolderUri) {
     }
 
     // Check include/exclude lists:
-    if (hasPassedFilters === undefined) { // TODO: rename to isIncluded
+    if (isIncluded === undefined) {
         const includeFiles = preferences.get<string>('includeFiles');
         // Check includes:
         const fileExtension = path.extname(editor.document.fileName)?.slice(1)
-        hasPassedFilters = Utility.contains(fileExtension, includeFiles);
-        // Check excludes: // Remove exludes
-        if (hasPassedFilters) {    // Only if not already failed
-            const excludeFiles = preferences.get<string>('excludeFiles');
-            hasPassedFilters = !Utility.contains(fileExtension, excludeFiles);
-        }
+        isIncluded = Utility.contains(fileExtension, includeFiles);
         // Check if it is a programming language (to check for text only in comments):
         const cStyleCommentsFiles = preferences.get<string>("cStyleCommentsFiles");
         inCStyleComment = Utility.contains(fileExtension, cStyleCommentsFiles);
@@ -104,7 +98,7 @@ if (!workspaceFolderUri) {
     //console.log("doc languageId: " + doc.languageId);
 
     // Return if filtered out.
-    if (!hasPassedFilters && !inCStyleComment)
+    if (!isIncluded && !inCStyleComment)
         return;
 
     // Get current cursor column and line

@@ -21,4 +21,11 @@ For example: If you type in "THe" it will be changed to "The".
 ![](assets/capitalization-correction.gif)
 
 
+# Configuration
+
+In the settings you can enable the correction for certain file extensions.
+It defaults to markdown and text files, but you can add any file extensions.
+
+Furthermore "CApitalization Correction" is aware of C-style comments, i.e.: //, /* */.
+If you include a specific file extension, only the text inside the comments will be corrected.
 
