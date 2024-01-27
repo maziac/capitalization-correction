@@ -16,7 +16,7 @@
         "url": "https://github.com/maziac/capitalization-correction.git"
     },
     "engines": {
-        "vscode": "^1.71.0"
+        "vscode": "^1.85.0"
     },
     "categories": [
         "Other"
@@ -29,7 +29,7 @@
     "contributes": {
         "configuration": {
             "type": "object",
-            "title": "'CApitalization Correction' Configuration",
+            "title": "CApitalization Correction Configuration",
             "properties": {
                 "capitalization-correction.includeFiles": {
                     "type": "string",
@@ -42,7 +42,7 @@
                     "type": "string",
                     "default": "c,cpp,c++,h,hpp,js,ts,tsx,java,cs",
                     "scope": "resource",
-                    "description": "A comma separated list of file extensions used for programming languages. In these files only the C-style comments (//, /* */) are checked for worng capitalization.",
+                    "description": "A comma separated list of file extensions used for programming languages. In these files only the C-style comments (//, /* */) are checked for wrong capitalization.",
                     "order": 20
                 }
             }
