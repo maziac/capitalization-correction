@@ -52,16 +52,39 @@ suite('Utility', () => {
     test('contains', () => {
         // Not found
         assert.ok(!Utility.contains('extzzzz', ''));
+        assert.ok(!Utility.contains('ext.zzzz', ''));
         assert.ok(!Utility.contains('', ''));
         assert.ok(!Utility.contains('extzzzz', undefined));
         assert.ok(!Utility.contains('', undefined));
         assert.ok(!Utility.contains('', 'txt'));
         assert.ok(!Utility.contains('md', 'txt'));
+        assert.ok(!Utility.contains('file.txt', '*.TXT'));
+        assert.ok(!Utility.contains('file.js', '*.{md,MD,markdown,txt,TXT}'));
+
 
         // Found
-        assert.ok(Utility.contains('ts', 'md,js,ts'));
-        assert.ok(Utility.contains('js', 'md,js,ts'));;
-        assert.ok(Utility.contains('js', 'js'));
+        assert.ok(Utility.contains('file.ts', '*.{md,js,ts}'));
+        assert.ok(Utility.contains('file.js', '*.{md,js,ts}'));;
+        assert.ok(Utility.contains('file.js', '*.js'));
+        assert.ok(Utility.contains('file.aaa.js', '*.js'));
+
+        // Found (defaults)
+        const defaultGlob = '{*.{md,MD,markdown,TXT},!(CMakeLists).txt}';
+        assert.ok(Utility.contains('file.md', defaultGlob));
+        assert.ok(Utility.contains('file.MD', defaultGlob));
+        assert.ok(Utility.contains('file.markdown', defaultGlob));
+        assert.ok(Utility.contains('file.TXT', defaultGlob));
+        assert.ok(Utility.contains('file.txt', defaultGlob));
+        assert.ok(Utility.contains('file.aaa.md', defaultGlob));
+        assert.ok(Utility.contains('file.aaa.MD', defaultGlob));
+        assert.ok(Utility.contains('file.aaa.markdown', defaultGlob));
+        assert.ok(Utility.contains('file.aaa.TXT', defaultGlob));
+        assert.ok(Utility.contains('file.aaa.txt', defaultGlob));
+        assert.ok(Utility.contains('CMakeList.txt', defaultGlob));
+
+        // Not found (defaults)
+        assert.ok(!Utility.contains('CMakeLists.txt', defaultGlob));
+        assert.ok(!Utility.contains('file.js', defaultGlob));
     });
 
     test('isComment', () => {

@@ -2,7 +2,7 @@
     "name": "capitalization-correction",
     "displayName": "CApitalization Correction",
     "description": "Corrects wrong capitalization in text input.",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "publisher": "maziac",
     "license": "MIT",
     "keywords": [
@@ -61,5 +61,8 @@
         "@types/node": "20.11.6",
         "@types/vscode": "^1.85.0",
         "typescript": "^5.3.3"
+    },
+    "dependencies": {
+        "micromatch": "^4.0.5"
     }
 }

@@ -1,3 +1,5 @@
+import * as micromatch from 'micromatch';
+
 
 export class Utility {
 	// Regex to find the space after the word.
@@ -35,22 +37,15 @@ export class Utility {
 	 * in a comma-separated string.
 	 * Comparisons are case sensitive.
 	 * @param docFileExtension E.g. "txt" or "js" or "" (empty).
-	 * @param commaSepString E.g. "js,txt". A comma separated list of file extensions. Or 'undefined'.
+	 * @param globPattern E.g. "js,txt". A comma separated list of file extensions. Or 'undefined'.
 	 * @returns a boolean value indicating whether the
 	 * `docFileExtension` is found in the `commaSepString`.
 	 */
-	public static contains(docFileExtension: string, commaSepString: string | undefined): boolean {
+	public static contains(docFilename: string, globPattern: string | undefined): boolean {
 		let found = false;
-		if (commaSepString) {
-			// To lowercase (case insensitive)
-			docFileExtension = docFileExtension.toLowerCase();
-			commaSepString = commaSepString.toLowerCase();
-			// Check includes:
-			const wrappedString = `,${commaSepString.replaceAll('.', '')},`;
-			// Check for language ids and file extensions
-			if (docFileExtension && wrappedString.includes(`,${docFileExtension},`)) {
-				found = true;
-			}
+		if (globPattern) {
+			// Check the pattern
+			found = micromatch.isMatch(docFilename, globPattern);
 		}
 		return found;
 	}
