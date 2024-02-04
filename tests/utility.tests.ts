@@ -166,42 +166,40 @@ suite('Utility', () => {
         });
     });
 
-    test('isComment', () => {
-        // Is a comment
-        assert.ok(Utility.isComment('// abc', '//', '/\\*', '\\*/'));
-        assert.ok(Utility.isComment('// // abc', '//', '/\\*', '\\*/'));
-        assert.ok(Utility.isComment('*/ // abc', '//', '/\\*', '\\*/'));
-        assert.ok(Utility.isComment('/*  */ // abc', '//', '/\\*', '\\*/'));
-        assert.ok(Utility.isComment('/* ab */// abc', '//', '/\\*', '\\*/'));
-        assert.ok(Utility.isComment('/* */ */ // abc', '//', '/\\*', '\\*/'));
-        assert.ok(Utility.isComment('/* /* */ // abc', '//', '/\\*', '\\*/'));
-        assert.ok(Utility.isComment('/* abc', '//', '/\\*', '\\*/'));
-        assert.ok(Utility.isComment('/*a', '//', '/\\*', '\\*/'));
-        assert.ok(Utility.isComment('/* *//* */ /**//* abc', '//', '/\\*', '\\*/'));
+    test('getSinceLastBlockComments', () => {
+        // Is outside a block comment
+        assert.equal(Utility.getSinceLastBlockComments('// abc', '/\\*', '\\*/'), '// abc');
+        assert.equal(Utility.getSinceLastBlockComments('// // abc',
+            '/\\*', '\\*/'), '// // abc');
+        assert.equal(Utility.getSinceLastBlockComments('*/ // abc', '/\\*', '\\*/'), '*/ // abc');
+        assert.equal(Utility.getSinceLastBlockComments('/*  */ // abc', '/\\*', '\\*/'), ' // abc');
+        assert.equal(Utility.getSinceLastBlockComments('/* ab */// abc', '/\\*', '\\*/'), '// abc');
+        assert.equal(Utility.getSinceLastBlockComments('/* */ */ // abc', '/\\*', '\\*/'), ' */ // abc');
+        assert.equal(Utility.getSinceLastBlockComments('/* /* */ // abc', '/\\*', '\\*/'), ' // abc');
+        assert.equal(Utility.getSinceLastBlockComments(' abc', '/\\*', '\\*/'), ' abc');
+        assert.equal(Utility.getSinceLastBlockComments('', '/\\*', '\\*/'), '');
+        assert.equal(Utility.getSinceLastBlockComments('*/ abc', '/\\*', '\\*/'), '*/ abc');
+        assert.equal(Utility.getSinceLastBlockComments('/*  */ abc', '/\\*', '\\*/'), ' abc');
         // Multiline
-        assert.ok(Utility.isComment('\n\n   \n// abc', '//', '/\\*', '\\*/'));
-        assert.ok(Utility.isComment('\n\n   \n// // abc', '//', '/\\*', '\\*/'));
-        assert.ok(Utility.isComment('\n\n */  \n*/ // abc', '//', '/\\*', '\\*/'));
-        assert.ok(Utility.isComment('\n/*\n \n  */ // abc', '//', '/\\*', '\\*/'));
-        assert.ok(Utility.isComment('\n/*\n \n  */\n// abc', '//', '/\\*', '\\*/'));
-        assert.ok(Utility.isComment('\n/*\n \n  // */\n// abc', '//', '/\\*', '\\*/'));
-        assert.ok(Utility.isComment('/*\n*/\n/*\n\na', '//', '/\\*', '\\*/'));
+        assert.equal(Utility.getSinceLastBlockComments('\n\n   \n// abc', '/\\*', '\\*/'), '\n\n   \n// abc');
+        assert.equal(Utility.getSinceLastBlockComments('\n\n   \n// // abc', '/\\*', '\\*/'), '\n\n   \n// // abc');
+        assert.equal(Utility.getSinceLastBlockComments('\n\n */  \n*/ // abc', '/\\*', '\\*/'), '\n\n */  \n*/ // abc');
+        assert.equal(Utility.getSinceLastBlockComments('\n/*\n \n  */ // abc', '/\\*', '\\*/'), ' // abc');
+        assert.equal(Utility.getSinceLastBlockComments('\n/*\n \n  */\n// abc', '/\\*', '\\*/'), '\n// abc');
+        assert.equal(Utility.getSinceLastBlockComments('\n/*\n \n  // */\n// abc', '/\\*', '\\*/'), '\n// abc');
 
 
-        // Is no comment
-        assert.ok(!Utility.isComment(' abc', '//', '/\\*', '\\*/'));
-        assert.ok(!Utility.isComment('', '//', '/\\*', '\\*/'));
-        assert.ok(!Utility.isComment('*/ abc', '//', '/\\*', '\\*/'));
-        assert.ok(!Utility.isComment('/*  */ abc', '//', '/\\*', '\\*/'));
+        // Is inside a block comment
+        assert.equal(Utility.getSinceLastBlockComments('/* abc', '/\\*', '\\*/'), undefined);
+        assert.equal(Utility.getSinceLastBlockComments('/*a', '/\\*', '\\*/'), undefined);
+        assert.equal(Utility.getSinceLastBlockComments('/* *//* */ /**//* abc', '/\\*', '\\*/'), undefined);
         // Multiline
-        assert.ok(!Utility.isComment('/*\n */ abc', '//', '/\\*', '\\*/'));
-        assert.ok(!Utility.isComment('/*\n */\n abc', '//', '/\\*', '\\*/'));
-        assert.ok(!Utility.isComment('\n\n\n', '//', '/\\*', '\\*/'));
-        assert.ok(!Utility.isComment('/* \n*/\n abc', '//', '/\\*', '\\*/'));
-        assert.ok(!Utility.isComment('/* \n*/\n abc', '//', '/\\*', '\\*/'));
-        assert.ok(!Utility.isComment('/* \n*/\n/*  */ abc', '//', '/\\*', '\\*/'));
-        assert.ok(!Utility.isComment('/* \n*/\n/*\n*/\n abc', '//', '/\\*', '\\*/'));
-
+        assert.equal(Utility.getSinceLastBlockComments('/*\n*/\n/*\n\na', '/\\*', '\\*/'), undefined);
+        assert.equal(Utility.getSinceLastBlockComments('/*\n */ abc', '/\\*', '\\*/'), ' abc');
+        assert.equal(Utility.getSinceLastBlockComments('/*\n */\n abc', '/\\*', '\\*/'), '\n abc');
+        assert.equal(Utility.getSinceLastBlockComments('\n\n\n', '/\\*', '\\*/'), '\n\n\n');
+        assert.equal(Utility.getSinceLastBlockComments('/* \n*/\n abc', '/\\*', '\\*/'), '\n abc');
+        assert.equal(Utility.getSinceLastBlockComments('/* \n*/\n/*  */ abc', '/\\*', '\\*/'), ' abc');
+        assert.equal(Utility.getSinceLastBlockComments('/* \n*/\n/*\n*/\n abc', '/\\*', '\\*/'), '\n abc');
     });
-
 });
