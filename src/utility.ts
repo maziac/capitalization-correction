@@ -33,19 +33,18 @@ export class Utility {
 	}
 
 
-	/** The function checks if a given language ID or file extension is included
-	 * in a comma-separated string.
+	/** The function checks if a given file path is matching a glob pattern.
 	 * Comparisons are case sensitive.
-	 * @param docFileExtension E.g. "txt" or "js" or "" (empty).
-	 * @param globPattern E.g. "js,txt". A comma separated list of file extensions. Or 'undefined'.
-	 * @returns a boolean value indicating whether the
-	 * `docFileExtension` is found in the `commaSepString`.
+	 * @param docFilepath The full file path.
+	 * @param globPattern E.g. "** /*.{md,txt}". A comma separated list of file extensions. Or 'undefined'.
+	 * @returns a boolean value indicating whether the docFilepath is matching
+	 * with globPattern.
 	 */
-	public static contains(docFilename: string, globPattern: string | undefined): boolean {
+	public static contains(docFilepath: string, globPattern: string | undefined): boolean {
 		let found = false;
 		if (globPattern) {
 			// Check the pattern
-			found = micromatch.isMatch(docFilename, globPattern);
+			found = micromatch.isMatch(docFilepath, globPattern);
 		}
 		return found;
 	}

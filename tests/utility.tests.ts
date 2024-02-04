@@ -49,42 +49,60 @@ suite('Utility', () => {
     });
 
 
-    test('contains', () => {
-        // Not found
-        assert.ok(!Utility.contains('extzzzz', ''));
-        assert.ok(!Utility.contains('ext.zzzz', ''));
-        assert.ok(!Utility.contains('', ''));
-        assert.ok(!Utility.contains('extzzzz', undefined));
-        assert.ok(!Utility.contains('', undefined));
-        assert.ok(!Utility.contains('', 'txt'));
-        assert.ok(!Utility.contains('md', 'txt'));
-        assert.ok(!Utility.contains('file.txt', '*.TXT'));
-        assert.ok(!Utility.contains('file.js', '*.{md,MD,markdown,txt,TXT}'));
+    suite('contains', () => {
+        test('general', () => {
+            // General tests:
+            // Found
+            assert.ok(Utility.contains('file.ts', '*.{md,js,ts}'));
+            assert.ok(Utility.contains('file.js', '*.{md,js,ts}'));;
+            assert.ok(Utility.contains('file.js', '*.js'));
+            assert.ok(Utility.contains('file.aaa.js', '*.js'));
+            assert.ok(Utility.contains('/folder/file.txt', '**/*.txt'));
+            assert.ok(Utility.contains('folder/file.txt', '**/*.txt'));
+            assert.ok(Utility.contains('file.txt', '**/*.txt'));
+            // Not found
+            assert.ok(!Utility.contains('extzzzz', ''));
+            assert.ok(!Utility.contains('ext.zzzz', ''));
+            assert.ok(!Utility.contains('', ''));
+            assert.ok(!Utility.contains('extzzzz', undefined));
+            assert.ok(!Utility.contains('', undefined));
+            assert.ok(!Utility.contains('', 'txt'));
+            assert.ok(!Utility.contains('md', 'txt'));
+            assert.ok(!Utility.contains('file.txt', '*.TXT'));
+            assert.ok(!Utility.contains('file.js', '*.{md,MD,markdown,txt,TXT}'));
+            assert.ok(!Utility.contains('/folder/file.txt', '*.txt'));
+            assert.ok(!Utility.contains('folder/file.txt', '*.txt'));
+        });
 
+        test('default excludes', () => {
+            // Defaults exclude glob:
+            const defaultExcludeGlob = '**/CMakeLists.txt';
+            // Found
+            assert.ok(Utility.contains('folder/CMakeLists.txt', defaultExcludeGlob));
+            assert.ok(Utility.contains('CMakeLists.txt', defaultExcludeGlob));
+            // Not found
+            assert.ok(!Utility.contains('**/CMakeLists', defaultExcludeGlob));
+        });
 
-        // Found
-        assert.ok(Utility.contains('file.ts', '*.{md,js,ts}'));
-        assert.ok(Utility.contains('file.js', '*.{md,js,ts}'));;
-        assert.ok(Utility.contains('file.js', '*.js'));
-        assert.ok(Utility.contains('file.aaa.js', '*.js'));
-
-        // Found (defaults)
-        const defaultGlob = '{*.{md,MD,markdown,TXT},!(CMakeLists).txt}';
-        assert.ok(Utility.contains('file.md', defaultGlob));
-        assert.ok(Utility.contains('file.MD', defaultGlob));
-        assert.ok(Utility.contains('file.markdown', defaultGlob));
-        assert.ok(Utility.contains('file.TXT', defaultGlob));
-        assert.ok(Utility.contains('file.txt', defaultGlob));
-        assert.ok(Utility.contains('file.aaa.md', defaultGlob));
-        assert.ok(Utility.contains('file.aaa.MD', defaultGlob));
-        assert.ok(Utility.contains('file.aaa.markdown', defaultGlob));
-        assert.ok(Utility.contains('file.aaa.TXT', defaultGlob));
-        assert.ok(Utility.contains('file.aaa.txt', defaultGlob));
-        assert.ok(Utility.contains('CMakeList.txt', defaultGlob));
-
-        // Not found (defaults)
-        assert.ok(!Utility.contains('CMakeLists.txt', defaultGlob));
-        assert.ok(!Utility.contains('file.js', defaultGlob));
+        test('default includes', () => {
+            // Defaults include glob:
+            const defaultIncludeGlob = '**/*.{md,MD,markdown,txt,TXT}';
+            // Found
+            assert.ok(Utility.contains('file.md', defaultIncludeGlob));
+            assert.ok(Utility.contains('file.MD', defaultIncludeGlob));
+            assert.ok(Utility.contains('file.markdown', defaultIncludeGlob));
+            assert.ok(Utility.contains('file.TXT', defaultIncludeGlob));
+            assert.ok(Utility.contains('file.txt', defaultIncludeGlob));
+            assert.ok(Utility.contains('file.aaa.md', defaultIncludeGlob));
+            assert.ok(Utility.contains('file.aaa.MD', defaultIncludeGlob));
+            assert.ok(Utility.contains('file.aaa.markdown', defaultIncludeGlob));
+            assert.ok(Utility.contains('file.aaa.TXT', defaultIncludeGlob));
+            assert.ok(Utility.contains('file.aaa.txt', defaultIncludeGlob));
+            assert.ok(Utility.contains('CMakeList.txt', defaultIncludeGlob));
+            assert.ok(Utility.contains('CMakeLists.txt', defaultIncludeGlob));
+            // Not found
+            assert.ok(!Utility.contains('file.js', defaultIncludeGlob));
+        });
     });
 
     test('isComment', () => {
