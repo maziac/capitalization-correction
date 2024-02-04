@@ -31,19 +31,47 @@
             "type": "object",
             "title": "CApitalization Correction Configuration",
             "properties": {
-                "capitalization-correction.includeFiles": {
+                "capitalization-correction.excludeGlob": {
                     "type": "string",
-                    "default": "md,markdown,txt,text",
+                    "default": "",
                     "scope": "resource",
-                    "description": "Add here all file extensions to include as a comma separated list. E.g. 'txt,md'. An empty line matches no file. Case insensitive.",
+                    "description": "This is the glob pattern to exclude files from capitalization correction generally.",
                     "order": 10
                 },
-                "capitalization-correction.cStyleCommentsFiles": {
+                "capitalization-correction.includeGlob": {
                     "type": "string",
-                    "default": "c,cpp,c++,h,hpp,js,ts,tsx,java,cs",
+                    "default": "**/*.{md,MD,markdown,txt,TXT}",
                     "scope": "resource",
-                    "description": "A comma separated list of file extensions used for programming languages. In these files only the C-style comments (//, /* */) are checked for wrong capitalization.",
+                    "description": "This is the glob pattern for files that should use capitalization correction for the whole file.",
                     "order": 20
+                },
+                "capitalization-correction.cStyleBlockCommentsGlob": {
+                    "type": "string",
+                    "default": "**/*.{c,cpp,c++,h,hpp,js,ts,tsx,java,cs,asm,s}",
+                    "scope": "resource",
+                    "description": "The glob pattern for files that should use capitalization correction in **C-style block comments**, /*...*/, (not the whole file).",
+                    "order": 30
+                },
+                "capitalization-correction.cStyleLineCommentsGlob": {
+                    "type": "string",
+                    "default": "**/*.{c,cpp,c++,h,hpp,js,ts,tsx,java,cs}",
+                    "scope": "resource",
+                    "description": "The glob pattern for files that should use capitalization correction in **C-style line comments**, //, (not the whole file).",
+                    "order": 40
+                },
+                "capitalization-correction.hashLineCommentsGlob": {
+                    "type": "string",
+                    "default": "**/{CMakeLists.txt,*.sh}",
+                    "scope": "resource",
+                    "description": "The glob pattern for files that should use capitalization correction in **hash line comments**, #, (not the whole file).",
+                    "order": 50
+                },
+                "capitalization-correction.colonLineCommentsGlob": {
+                    "type": "string",
+                    "default": "**/*.{asm,s}",
+                    "scope": "resource",
+                    "description": "The glob pattern for files that should use capitalization correction in **colon line comments**, ;, (not the whole file).",
+                    "order": 50
                 }
             }
         }

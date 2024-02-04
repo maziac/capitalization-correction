@@ -81,7 +81,7 @@ suite('Utility', () => {
             assert.ok(Utility.contains('folder/CMakeLists.txt', defaultExcludeGlob));
             assert.ok(Utility.contains('CMakeLists.txt', defaultExcludeGlob));
             // Not found
-            assert.ok(!Utility.contains('**/CMakeLists', defaultExcludeGlob));
+            assert.ok(!Utility.contains('folder/CMakeLists', defaultExcludeGlob));
         });
 
         test('default includes', () => {
@@ -102,6 +102,67 @@ suite('Utility', () => {
             assert.ok(Utility.contains('CMakeLists.txt', defaultIncludeGlob));
             // Not found
             assert.ok(!Utility.contains('file.js', defaultIncludeGlob));
+        });
+
+        test('default c-style block includes', () => {
+            // Defaults include glob:
+            const defaultCStyleBlockGlob = '**/*.{c,cpp,c++,h,hpp,js,ts,tsx,java,cs,asm,s}';
+            // Found
+            assert.ok(Utility.contains('folder/source.c', defaultCStyleBlockGlob));
+            assert.ok(Utility.contains('source.cpp', defaultCStyleBlockGlob));
+            assert.ok(Utility.contains('source.c++', defaultCStyleBlockGlob));
+            assert.ok(Utility.contains('source.h', defaultCStyleBlockGlob));
+            assert.ok(Utility.contains('source.hpp', defaultCStyleBlockGlob));
+            assert.ok(Utility.contains('source.js', defaultCStyleBlockGlob));
+            assert.ok(Utility.contains('source.ts', defaultCStyleBlockGlob));
+            assert.ok(Utility.contains('source.java', defaultCStyleBlockGlob));
+            assert.ok(Utility.contains('source.cs', defaultCStyleBlockGlob));
+            // Not found
+            assert.ok(!Utility.contains('CMakeLists.txt', defaultCStyleBlockGlob));
+            assert.ok(!Utility.contains('folder/my.md', defaultCStyleBlockGlob));
+            assert.ok(!Utility.contains('my.md', defaultCStyleBlockGlob));
+        });
+
+        test('default c-style line includes', () => {
+            // Defaults include glob:
+            const defaultCStyleLineGlob = '**/*.{c,cpp,c++,h,hpp,js,ts,tsx,java,cs}';
+            // Found
+            assert.ok(Utility.contains('folder/source.c', defaultCStyleLineGlob));
+            assert.ok(Utility.contains('source.cpp', defaultCStyleLineGlob));
+            assert.ok(Utility.contains('source.c++', defaultCStyleLineGlob));
+            assert.ok(Utility.contains('source.h', defaultCStyleLineGlob));
+            assert.ok(Utility.contains('source.hpp', defaultCStyleLineGlob));
+            assert.ok(Utility.contains('source.js', defaultCStyleLineGlob));
+            assert.ok(Utility.contains('source.ts', defaultCStyleLineGlob));
+            assert.ok(Utility.contains('source.java', defaultCStyleLineGlob));
+            assert.ok(Utility.contains('source.cs', defaultCStyleLineGlob));
+            // Not found
+            assert.ok(!Utility.contains('CMakeLists.txt', defaultCStyleLineGlob));
+            assert.ok(!Utility.contains('folder/my.md', defaultCStyleLineGlob));
+            assert.ok(!Utility.contains('my.md', defaultCStyleLineGlob));
+        });
+
+        test('default hash line includes', () => {
+            // Defaults include glob:
+            const defaultHashLineGlob = '**/{CMakeLists.txt,*.sh}';
+            // Found
+            assert.ok(Utility.contains('folder/CMakeLists.txt', defaultHashLineGlob));
+            assert.ok(Utility.contains('CMakeLists.txt', defaultHashLineGlob));
+            assert.ok(Utility.contains('bash.sh', defaultHashLineGlob));
+            // Not found
+            assert.ok(!Utility.contains('my.md', defaultHashLineGlob));
+            assert.ok(!Utility.contains('CMakeLists.md', defaultHashLineGlob));
+            assert.ok(!Utility.contains('CMakeLists', defaultHashLineGlob));
+            assert.ok(!Utility.contains('CMakeLists.', defaultHashLineGlob));
+        });
+
+        test('default colon line includes', () => {
+            // Defaults include glob:
+            const defaultcolonLineGlob = '**/*.{asm,s}';
+            // Found
+            assert.ok(Utility.contains('folder/my.asm', defaultcolonLineGlob));
+            assert.ok(Utility.contains('my.asm', defaultcolonLineGlob));
+            assert.ok(Utility.contains('my.s', defaultcolonLineGlob));
         });
     });
 
