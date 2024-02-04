@@ -1,4 +1,5 @@
 .*/
+tests/**
 out/tests/**
 out/**/*.map
 src/**
@@ -9,3 +10,4 @@ scratchpad.md
 todo.md
 *.vsix
 assets/*.xcf
+*.ts

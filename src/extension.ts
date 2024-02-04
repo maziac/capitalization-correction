@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import {Utility} from './utility';
-import path = require('path');
 
 
 // To store the current preferences.
@@ -92,19 +91,19 @@ function correctInput(event: vscode.TextDocumentChangeEvent) {
     // Check include/exclude lists:
     if (isIncluded === undefined) {
         // Check general exclude list:
-        const filepath = path.extname(editor.document.fileName)
+        const filepath = editor.document.fileName;
         const excludeGlob = preferences.get<string>('excludeGlob');
         isIncluded = !Utility.contains(filepath, excludeGlob);
         if (isIncluded) {
             // Check includes:
-            const includeGlob = preferences.get<string>('includeFiles');
+            const includeGlob = preferences.get<string>('includeGlob');
             isIncluded = Utility.contains(filepath, includeGlob);
             // Check if it is a included in the comment globs:
             inCStyleBlockCommentsGlob = Utility.contains(filepath, preferences.get<string>("cStyleBlockCommentsGlob"));
             inCStyleLineCommentsGlob = Utility.contains(filepath, preferences.get<string>("cStyleLineCommentsGlob"));
             inHashLineCommentsGlob = Utility.contains(filepath, preferences.get<string>("hashLineCommentsGlob"));
             inColonLineCommentsGlob = Utility.contains(filepath, preferences.get<string>("colonLineCommentsGlob"));
-            inAnyCommentsGlob = (inCStyleBlockCommentsGlob || inCStyleLineCommentsGlob || inHashLineCommentsGlob || !inColonLineCommentsGlob);
+            inAnyCommentsGlob = (inCStyleBlockCommentsGlob || inCStyleLineCommentsGlob || inHashLineCommentsGlob || inColonLineCommentsGlob);
         }
     }
 

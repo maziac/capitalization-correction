@@ -4,11 +4,11 @@ import * as micromatch from 'micromatch';
 export class Utility {
 	// Regex to find the space after the word.
 	// (To start the correction of the word)
-	static regexLetter = RegExp(/\p{L}/u);
+	static readonly regexLetter = RegExp(/\p{L}/u);
 
 	// Regex to find a combination of 2 upper case followed by lowercase
 	// letters at the start of the string.
-	static regexWrongCapitalizedWord = RegExp(/(?:^|\P{L})(\p{Lu})(\p{Lu})(\p{Ll}+)$/u);
+	static readonly regexWrongCapitalizedWord = RegExp(/(?:^|\P{L})(\p{Lu})(\p{Lu})(\p{Ll}+)$/u);
 
 
 	/** Checks if text is a letter. Upper or lower case.

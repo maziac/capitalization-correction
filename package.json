@@ -49,28 +49,28 @@
                     "type": "string",
                     "default": "**/*.{c,cpp,c++,h,hpp,js,ts,tsx,java,cs,asm,s}",
                     "scope": "resource",
-                    "description": "The glob pattern for files that should use capitalization correction in **C-style block comments**, /*...*/, (not the whole file).",
+                    "description": "The glob pattern for files that should use capitalization correction in C-style block comments, /*...*/, (not the whole file).",
                     "order": 30
                 },
                 "capitalization-correction.cStyleLineCommentsGlob": {
                     "type": "string",
                     "default": "**/*.{c,cpp,c++,h,hpp,js,ts,tsx,java,cs}",
                     "scope": "resource",
-                    "description": "The glob pattern for files that should use capitalization correction in **C-style line comments**, //, (not the whole file).",
+                    "description": "The glob pattern for files that should use capitalization correction in C-style line comments, //, (not the whole file).",
                     "order": 40
                 },
                 "capitalization-correction.hashLineCommentsGlob": {
                     "type": "string",
                     "default": "**/{CMakeLists.txt,*.sh}",
                     "scope": "resource",
-                    "description": "The glob pattern for files that should use capitalization correction in **hash line comments**, #, (not the whole file).",
+                    "description": "The glob pattern for files that should use capitalization correction in hash line comments, #, (not the whole file). E.g. for bash scripts.",
                     "order": 50
                 },
                 "capitalization-correction.colonLineCommentsGlob": {
                     "type": "string",
                     "default": "**/*.{asm,s}",
                     "scope": "resource",
-                    "description": "The glob pattern for files that should use capitalization correction in **colon line comments**, ;, (not the whole file).",
+                    "description": "The glob pattern for files that should use capitalization correction in colon line comments, ;, (not the whole file). E.g. for assembler sources.",
                     "order": 50
                 }
             }
