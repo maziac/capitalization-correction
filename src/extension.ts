@@ -13,7 +13,11 @@ let workspaceFolderUri: vscode.Uri | undefined;
 let isIncluded: boolean | undefined;
 
 // Stores whether the correction should only be applied to text
-let inCStyleComment: boolean;
+let inCStyleBlockCommentsGlob: boolean;
+let inCStyleLineCommentsGlob: boolean;
+let inHashLineCommentsGlob: boolean;
+let inColonLineCommentsGlob: boolean;
+let inAnyCommentsGlob: boolean;
 
 // The extension name
 let extensionName: string;
@@ -87,18 +91,25 @@ function correctInput(event: vscode.TextDocumentChangeEvent) {
 
     // Check include/exclude lists:
     if (isIncluded === undefined) {
-        const includeFiles = preferences.get<string>('includeFiles');
-        // Check includes:
-        const fileExtension = path.extname(editor.document.fileName)?.slice(1)
-        isIncluded = Utility.contains(fileExtension, includeFiles);
-        // Check if it is a programming language (to check for text only in comments):
-        const cStyleCommentsFiles = preferences.get<string>("cStyleCommentsFiles");
-        inCStyleComment = Utility.contains(fileExtension, cStyleCommentsFiles);
+        // Check general exclude list:
+        const filepath = path.extname(editor.document.fileName)
+        const excludeGlob = preferences.get<string>('excludeGlob');
+        isIncluded = !Utility.contains(filepath, excludeGlob);
+        if (isIncluded) {
+            // Check includes:
+            const includeGlob = preferences.get<string>('includeFiles');
+            isIncluded = Utility.contains(filepath, includeGlob);
+            // Check if it is a included in the comment globs:
+            inCStyleBlockCommentsGlob = Utility.contains(filepath, preferences.get<string>("cStyleBlockCommentsGlob"));
+            inCStyleLineCommentsGlob = Utility.contains(filepath, preferences.get<string>("cStyleLineCommentsGlob"));
+            inHashLineCommentsGlob = Utility.contains(filepath, preferences.get<string>("hashLineCommentsGlob"));
+            inColonLineCommentsGlob = Utility.contains(filepath, preferences.get<string>("colonLineCommentsGlob"));
+            inAnyCommentsGlob = (inCStyleBlockCommentsGlob || inCStyleLineCommentsGlob || inHashLineCommentsGlob || !inColonLineCommentsGlob);
+        }
     }
-    //console.log("doc languageId: " + doc.languageId);
 
     // Return if filtered out.
-    if (!isIncluded && !inCStyleComment)
+    if (!isIncluded && !inAnyCommentsGlob)
         return;
 
     // Get current cursor column and line
@@ -106,19 +117,37 @@ function correctInput(event: vscode.TextDocumentChangeEvent) {
     const selectionClmn = start.character;
     const line = start.line;
 
-    // Check for comment area
-    if (inCStyleComment) {
-        // Do extra check if current cursor position is inside a comment
-        const prevText = doc.getText(new vscode.Range(0, 0, line, selectionClmn));  // All text from line 0 to current cursor position
-        if (!Utility.isComment(prevText, '//', '/\\*', '\\*/')) {
-            // Stop if not in a comment
-            return;
+    // Check for comments
+    let text: string | undefined;
+    if (inAnyCommentsGlob) {
+        if (inCStyleBlockCommentsGlob) {
+            text = doc.getText(new vscode.Range(0, 0, line, selectionClmn)); // All text from line 0 to current cursor position
+            text = Utility.getSinceLastBlockComments(text, '/\\*', '\\*/');
+            if (text !== undefined) {
+                const lineStartIndex = text.lastIndexOf('\n') + 1;
+                text = text.substring(lineStartIndex);
+            }
+        }
+        else {
+            // Get line up to current "cursor" position
+            text = doc.getText(new vscode.Range(line, 0, line, selectionClmn));
+        }
+        // Now text is either undefined, or contains the current line
+        // (without any block comment)
+        if (text !== undefined) {
+            // Analyze line comments
+            const isLineComment =
+                (inCStyleLineCommentsGlob && text.includes('//'))
+                || (inHashLineCommentsGlob && text.includes('#'))
+                || (inColonLineCommentsGlob && text.includes(';'));
+            if (!isLineComment)
+                return; // Not a block comment and not a line comment
         }
     }
 
     // Get line up to current "cursor" position
-    const text = doc.getText(new vscode.Range(line, 0, line, selectionClmn));
-    //console.log(":" + text);
+    if (text === undefined)
+        text = doc.getText(new vscode.Range(line, 0, line, selectionClmn));
 
     // Get corrected word
     let correctedWord = Utility.getCorrectlyCapitalizedWord(text);

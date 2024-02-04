@@ -58,9 +58,11 @@ export class Utility {
 	 * @param singleLineToken The token used for single line comments, e.g. "//".
 	 * @param blockStartToken The token used for the start of a block comment, e.g. "/*".
 	 * @param blockEndToken The token used for the end of a block comment, e.g. "/*".
-	 * @returns true if the text ends in a comment.
+	 * @returns 'undefined' if text ends inside a comment. Otherwise the text
+	 * since the last comment termination is returned (or all text if there was
+	 * no block comment at all).
 	 */
-	public static isComment(text: string, singleLineToken: string, blockStartToken: string, blockEndToken: string): boolean {
+	public static getSinceLastBlockComments(text: string, blockStartToken: string, blockEndToken: string): string | undefined {
 		// First check for block comments.
 		//const match = RegExp('(/\\*|\\*/)', 'gm').exec(text);
 		let inComment = false;
@@ -84,21 +86,12 @@ export class Utility {
 				}
 			}
 		}
-		// Return if inside a block comment
+		// Return undefined if inside a block comment
 		if (inComment)
-			return true;
-		// Otherwise remove the complete text up to the last end token
-		text = text.substring(index);
-		// Either there is no block comment or it has been terminated.
-
-		// Check for line comment:
-		// Get the starting index of the last line
-		const lineStartIndex = text.lastIndexOf('\n') + 1;
-		// Now search for single line token
-		if (text.includes('//', lineStartIndex))
-			return true;	// Single line comment found
-
-		// text ends in no comment
-		return false;
+			return undefined;
+		// Other wise return whole text or text starting at the last block comment termination.
+		if (index !== 0)
+			text = text.substring(index);
+		return text;
 	}
 }

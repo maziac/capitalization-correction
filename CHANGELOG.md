@@ -1,5 +1,8 @@
 # Changelog
 
+# 1.1.0
+- Preferences re-done. Old preferences abandoned. New includes/excludes use globbing for more flexibility.
+
 # 1.0.0
 - Added support for configuration of file extensions to cover.
 - Added support for correction only inside comments for programming languages.
