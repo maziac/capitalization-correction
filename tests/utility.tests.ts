@@ -46,6 +46,28 @@ suite('Utility', () => {
 
         // Umlauts
         assert.equal(Utility.getCorrectlyCapitalizedWord('ÄÖüß'), 'Äöüß');
+
+        // More words
+        assert.equal(Utility.getCorrectlyCapitalizedWord('DEf ABc'), 'Abc');
+    });
+
+    test('getCorrectlyCapitalizedLetterAfterHyphen', () => {
+        // Nothing found
+        assert.equal(Utility.getCorrectlyCapitalizedWord("DON'T "), null);
+        assert.equal(Utility.getCorrectlyCapitalizedWord("DON't "), null);
+        assert.equal(Utility.getCorrectlyCapitalizedWord("doN'T "), null);
+        assert.equal(Utility.getCorrectlyCapitalizedWord("R'X "), null);
+
+        // Corrected
+        assert.equal(Utility.getCorrectlyCapitalizedWord("don'T"), "t");
+        assert.equal(Utility.getCorrectlyCapitalizedWord("Can'T"), "t");
+        assert.equal(Utility.getCorrectlyCapitalizedWord("r'X"), "x");
+
+        // Umlauts
+        assert.equal(Utility.getCorrectlyCapitalizedWord("nä'S"), "s");
+
+        // More words
+        assert.equal(Utility.getCorrectlyCapitalizedWord("don'S can'T"), "t");
     });
 
 

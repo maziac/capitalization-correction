@@ -13,10 +13,9 @@ If you like the "CApitalization Correction" extension please consider supporting
 
 # CApitalization Correction
 
-This extension does only one thing: it corrects a typo in the capitalization.
-If you type in 2 uppercase characters followed by a lower case character it will change the second character to lower case.
-For example: If you type in "THe" it will be changed to "The".
-
+This extension corrects two types of capitalization typos:
+1. If you type two uppercase characters followed by a lowercase character, it will change the second character to lowercase. For example, if you type "THe", it will be changed to "The".
+2. If you type a lowercase word followed by an apostrophe and an uppercase letter, it will change the uppercase letter to lowercase. For example, "don'T" will be changed to "don't".
 
 ![](assets/capitalization-correction.gif)
 
@@ -29,3 +28,8 @@ It defaults to markdown and text files, but you can add any file extensions.
 Furthermore "CApitalization Correction" is aware of C-style comments, i.e.: //, /* */.
 If you include a specific file extension, only the text inside the comments will be corrected.
 
+
+
+Cap
+
+Don'Tt

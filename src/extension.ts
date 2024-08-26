@@ -62,6 +62,9 @@ export function activate(context: vscode.ExtensionContext) {
  * I.e. the word is corrected not before the user e.g. entered a space.
  */
 function correctInput(event: vscode.TextDocumentChangeEvent) {
+    // Ignore undo and redo
+    if (event.reason !== undefined)
+        return;
     // Check on change
     if (!event.contentChanges.length)
         return;
@@ -147,19 +150,19 @@ function correctInput(event: vscode.TextDocumentChangeEvent) {
     // Get line up to current "cursor" position
     if (text === undefined)
         text = doc.getText(new vscode.Range(line, 0, line, selectionClmn));
+    if (!text)   // length = 0
+        return;
 
     // Get corrected word
+    //console.log("Text: '" + text + "'");
     let correctedWord = Utility.getCorrectlyCapitalizedWord(text);
+    //console.log("  to: '" + correctedWord + "'");
     if (!correctedWord)
         return; // No word was corrected
 
     // Replace
     const startClmn = selectionClmn - correctedWord.length;
     let endClmn = selectionClmn;
-    if (inpLetter !== '\n') {
-        correctedWord += inpLetter;   // For correct behavior of UNDO
-        endClmn++;
-    }
     editor.edit(
         editBuilder => {
             editBuilder.delete(new vscode.Range(line, startClmn, line, endClmn));

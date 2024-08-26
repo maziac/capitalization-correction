@@ -10,6 +10,10 @@ export class Utility {
 	// letters at the start of the string.
 	static readonly regexWrongCapitalizedWord = RegExp(/(?:^|\P{L})(\p{Lu})(\p{Lu})(\p{Ll}+)$/u);
 
+	// Regex to find a combination of 2 upper case followed by lowercase
+	// letters at the start of the string.
+	static readonly regexCapitalizationAfterApostrophe = RegExp(/\p{Ll}'(\p{Lu})$/u);
+
 
 	/** Checks if text is a letter. Upper or lower case.
 	 * @returns true if it is and text length is exactly 1.
@@ -24,11 +28,22 @@ export class Utility {
 	 * If no word is found that can be corrected, null is returned.
 	 */
 	public static getCorrectlyCapitalizedWord(text: string): string | null {
-		const match = this.regexWrongCapitalizedWord.exec(text);
-		if (!match)
-			return null; // Nothing found
-		// Otherwise fix capitalization
-		const correctedWord = match[1] + match[2].toLowerCase() + match[3];
+		let correctedWord;
+		const match1 = this.regexWrongCapitalizedWord.exec(text);
+		if (match1) {
+			// Otherwise fix capitalization
+			correctedWord = match1[1] + match1[2].toLowerCase() + match1[3];
+		}
+		else {
+			// Now check for something like "'T" at the end of the string.
+			const match2 = this.regexCapitalizationAfterApostrophe.exec(text);
+			if (match2) {
+				// Fix capitalization
+				correctedWord = match2[1].toLowerCase();
+		//		console.log("match2: ", match2);
+		//		console.log("Corrected word: " + correctedWord);
+			}
+		}
 		return correctedWord;
 	}
 

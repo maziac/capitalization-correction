@@ -1,5 +1,9 @@
 # Changelog
 
+# 1.2.0
+- Additional check for "don'T"
+- Fixed undo/redo behavior
+
 # 1.1.0
 - Preferences re-done. Old preferences abandoned. New includes/excludes use globbing for more flexibility.
 
